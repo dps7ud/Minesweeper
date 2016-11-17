@@ -11,7 +11,7 @@ I'll include a brief to-do list here since it seems overkill to raise issues.
 Cleanup:
 --------
 
-- [ ] Commit everything
+- [x] Commit everything
 - [ ] Put in good comments
 - [ ] Take out bad comments
 - [ ] Read PEP8 again and everything in this repository

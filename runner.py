@@ -2,7 +2,7 @@
 #   pass control to caller
 ms = __import__('twoms')
 import random
-game = ms.msGame()
+game = ms.MsGame()
 def clear(tup):
     if tup in cleared:
         print("Duplicate guess: " + str(tup))
@@ -32,7 +32,7 @@ def getAround(tup):
 def retreive(tup, board):
     return board[tup[0]][tup[1]]
 def run():
-    game = ms.msGame()
+    game = ms.MsGame()
 cleared = []
 flagged = []
 info = clear((5,5))
