@@ -1,5 +1,7 @@
 """Minesweeper.py
 Class: MsGame - object holding all game related information
+
+TODO: remove all I/O from this file
 """
 
 import itertools

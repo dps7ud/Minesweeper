@@ -1,26 +1,47 @@
-#Under construction
-#   pass control to caller
-ms = __import__('twoms')
+""" runner.py
+A script to play a number of minesweeper games 
+TODO: remove unwanted (nearly all) I/O from this file
+      get rid of copy of board (called 'info').
+"""
+
+import twoms as ms
 import random
+
 game = ms.MsGame()
+cleared = []
+flagged = []
+
 def clear(tup):
+    """Submits clearing guess to game object"""
     if tup in cleared:
         print("Duplicate guess: " + str(tup))
         return
     val = game.play(('c',tup[0],tup[1]))
     cleared.append(tup)
     return val
-#TODO: Doesn't work for unflagging
+
+info = clear((5,5))
+board = info[1] 
+
 def flag(tup):
+    """Marked the given square as flagged.
+    #TODO: Doesn't work for unflagging
+    """
     if tup in flagged:
         print("Tuple already flagged")
     val = game.play(('f',tup[0],tup[1]))
     flagged.append(tup)
     return val
+
 def solve(tup):
+    """Submits solving guess to game object.
+    TODO: oneliner function
+    """
     val = game.play(('s', tup[0], tup[1]))
     return val
+
 def getAround(tup):
+    """ Returns a list of squares adjacent to the input square."""
     l = [-1,0,1]
     around = []
     for a in l:
@@ -29,14 +50,13 @@ def getAround(tup):
                 continue
             around.append( (tup[0] + a, tup[1] + b) ) 
     return around
+
 def retreive(tup, board):
+    """find character at tuple"""
     return board[tup[0]][tup[1]]
-def run():
-    game = ms.MsGame()
-cleared = []
-flagged = []
-info = clear((5,5))
-board = info[1] 
+
+"""Script
+"""
 while not info[0]:
     shown = set([])
     for row in board:
