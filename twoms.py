@@ -46,11 +46,13 @@ class MsGame:
     board = [[ '-' ] * 10 for xx in range(10)]
     game_over = 0
     mines = []
+    num_mines = 0
     squares = []
     before_first_guess = True
 
     def __init__(self, given_mines=None):
         if given_mines is not None:
+            self.num_mines = len(list(set(self.mines)))
             self.mines = given_mines
         for ii, jj in _pair_range(10, 10):
             self.squares.append( (ii,jj) )
@@ -58,7 +60,8 @@ class MsGame:
 
     def setup_mines(self, guessed_square):
         if not self.mines:
-            for ii in range(10):
+            self.num_mines = 10
+            for ii in range(self.num_mines):
                 x = random.randint(0,9)
                 y = random.randint(0,9)
                 while (x,y) in self.mines or (x,y) == guessed_square:
@@ -116,7 +119,7 @@ class MsGame:
                     dashes += 1
                 if square == self.FLAGGED:
                     bangs += 1
-        return bangs + dashes == 10
+        return bangs + dashes == self.num_mines
 
     def clear(self,tup):
         """Clear indicated square. If square holds zero, 
