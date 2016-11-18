@@ -49,10 +49,25 @@ class MsGame:
     squares = []
     before_first_guess = True
 
-    def __init__(self):
+    def __init__(self, given_mines=None):
+        if given_mines is not None:
+            self.mines = given_mines
         for ii, jj in _pair_range(10, 10):
             self.squares.append( (ii,jj) )
         self.prettyprint()
+
+    def setup_mines(self, guessed_square):
+        if not self.mines:
+            for ii in range(10):
+                x = random.randint(0,9)
+                y = random.randint(0,9)
+                while (x,y) in self.mines or (x,y) == guessed_square:
+                    x = random.randint(0,9)
+                    y = random.randint(0,9)
+                self.mines.append((x,y))
+        else:
+            return
+            
 
     def prettyprint(self):
         """For printing board to user"""
@@ -141,13 +156,7 @@ class MsGame:
             """Need to call out first guess so that we don't find a mine"""
             if tup[0] != 'c':
                 return (self.game_over, board)
-            for ii in range(10):
-                x = random.randint(0,9)
-                y = random.randint(0,9)
-                while (x,y) in self.mines or (x,y) == tguess:
-                    x = random.randint(0,9)
-                    y = random.randint(0,9)
-                self.mines.append((x,y))
+            self.setup_mines(tguess)
             self.clear((tup[1],tup[2]))
             self.prettyprint()
             if self.winCheck():
