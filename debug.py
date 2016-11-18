@@ -10,16 +10,18 @@ Guess Format:
 import re
 import twoms as ms
 
-def verify(guess_string):
+
+def _verify(guess_string):
     """ Verifies proper guess input"""
     regex = '^(f|c|s)\s\d[,]\d$'
     return bool(re.findall(regex,guess_string))
+
 
 game = ms.MsGame()
 game_over = False
 while not game_over:
     guess = ''
-    while not verify(guess):
+    while not _verify(guess):
         guess = input("Enter guess: ").lower().strip()
     guess_to_pass = tuple(guess.replace(' ',',').split(','))
     guess_to_pass = (guess_to_pass[0],int(guess_to_pass[1]), int(guess_to_pass[2]))

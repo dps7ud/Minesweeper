@@ -11,49 +11,56 @@ game = ms.MsGame()
 cleared = []
 flagged = []
 
-def clear(tup):
+
+def clear(square):
     """Submits clearing guess to game object"""
-    if tup in cleared:
-        print("Duplicate guess: " + str(tup))
+    if square in cleared:
+        print("Duplicate guess: " + str(square))
         return
-    val = game.play(('c',tup[0],tup[1]))
-    cleared.append(tup)
+    val = game.play(('c',square[0],square[1]))
+    cleared.append(square)
     return val
+
 
 info = clear((5,5))
 board = info[1] 
 
-def flag(tup):
+
+def flag(square):
     """Marked the given square as flagged.
     #TODO: Doesn't work for unflagging
     """
-    if tup in flagged:
-        print("Tuple already flagged")
-    val = game.play(('f',tup[0],tup[1]))
-    flagged.append(tup)
+    if square in flagged:
+        print("squarele already flagged")
+    val = game.play(('f',square[0],square[1]))
+    flagged.append(square)
     return val
 
-def solve(tup):
+
+def solve(square):
     """Submits solving guess to game object.
     TODO: oneliner function
     """
-    val = game.play(('s', tup[0], tup[1]))
+    val = game.play(('s', square[0], square[1]))
     return val
 
-def getAround(tup):
+
+def get_around(square):
     """ Returns a list of squares adjacent to the input square."""
     l = [-1,0,1]
     around = []
     for a in l:
         for b in l:
-            if 0 > tup[0] + a or 9 < tup[0] + a or 0 > tup[1] + b or 9 < tup[1] + b:
+            if 0 > square[0] + a or 9 < square[0] + a or 0 > square[1] + b or 9 < square[1] + b:
                 continue
-            around.append( (tup[0] + a, tup[1] + b) ) 
+            around.append( (square[0] + a, square[1] + b) ) 
     return around
 
-def retreive(tup, board):
+
+def retreive(square, board):
     """find character at tuple"""
-    return board[tup[0]][tup[1]]
+    return board[square[0]][square[1]]
+
 
 """The first guess is always to clear 5,5. if this guess does not
 result in an opening, we guess randomly until we get an opening or
@@ -92,7 +99,7 @@ while not info[0]:
                 continue
             else:
                 n = int(c)
-                around = getAround((ii,jj))
+                around = get_around((ii,jj))
                 around.remove( (ii,jj) )
                 hidden = []
                 flagCount = 0
@@ -116,7 +123,7 @@ while not info[0]:
             if c in ['*','0','-']:
                 continue
             n = int(c)
-            around = getAround( (ii,jj))
+            around = get_around( (ii,jj))
             around.remove( (ii,jj) )
             flagCount = 0
             hiddenCount = 0

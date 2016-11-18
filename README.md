@@ -14,8 +14,8 @@ Cleanup:
 - [x] Commit everything
 - [x] Put in good comments
 - [x] Take out bad comments
-- [ ] Read PEP8 again and everything in this repository
-- [ ] Try not to cry 
+- [x] Read PEP8 again and everything in this repository
+- [x] Try not to cry 
 - [ ] Stop using debug.py to test things and write a real goddamn test suite
 - [ ] Refactor communication between "twoms" module and runner/debug (also rewrite entire 'play' method
 - [ ] Rename pretty much everything
