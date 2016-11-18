@@ -2,6 +2,9 @@
 *.pyc
 *.pyo
 
+# pycache
+__pycache__/
+
 # Vim swaps
 *.sw
 *.swp

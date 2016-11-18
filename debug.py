@@ -3,7 +3,7 @@ Guess Format:
   c 0,9 - check the square at 0,9
   f 9,0 - flag the square at 9,0
   s 5,5 - solve the square at 5,5. This is equivalent to 
-               the double press on microsoft minesweeper.
+               pressing RMB and LMB on microsoft minesweeper.
   The first guess must be of the "check" variety. 
 """
 
@@ -12,7 +12,6 @@ import twoms as ms
 
 def verify(guess_string):
     """ Verifies proper guess input"""
-    guess_string = guess_string.strip()
     regex = '^(f|c|s)\s\d[,]\d$'
     return bool(re.findall(regex,guess_string))
 

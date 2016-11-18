@@ -55,7 +55,9 @@ def retreive(tup, board):
     """find character at tuple"""
     return board[tup[0]][tup[1]]
 
-"""Script
+"""The first guess is always to clear 5,5. if this guess does not
+result in an opening, we guess randomly until we get an opening or
+we lose
 """
 while not info[0]:
     shown = set([])
@@ -73,12 +75,16 @@ while not info[0]:
         info = clear((x,y))
 lst = [ [] for x in range(8)]
 changed = 1
+
+""" If the algorithm below does not change anything, we must guess.
+"""
 while not info[0]:
     print(changed)
     if not changed:
         print("hung")
         break
     changed = 0
+    """Finds all nonzero cleared squares and inspects surrounding squares"""
     for ii in range(10):
         for jj in range(10):
             c = retreive((ii,jj), board)
@@ -96,11 +102,14 @@ while not info[0]:
                         hidden.append(a)
                     elif sym == '*':
                         flagCount += 1
+                """If there are only as many squares touching 'a' as there are
+                mines around 'a', we can flag everything"""
                 if len(hidden) + flagCount == n and len(hidden) > 0:
                     for h in hidden:
                         info = flag(h)
                         board = info[1]
                     changed = 2
+    """Finds all nonzero cleared squares and inspects surrounding squares"""
     for ii in range(10):
         for jj in range(10):
             c = retreive((ii,jj), board)
@@ -117,6 +126,8 @@ while not info[0]:
                     flagCount += 1
                 if sym == '-':
                     hiddenCount += 1
+            """If all surrounding mines are flagged, and there are unchecked squares,
+            check everythin"""
             if flagCount == n and hiddenCount != 0:
                 if info[0]:
                     break

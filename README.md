@@ -12,12 +12,12 @@ Cleanup:
 --------
 
 - [x] Commit everything
-- [ ] Put in good comments
-- [ ] Take out bad comments
+- [x] Put in good comments
+- [x] Take out bad comments
 - [ ] Read PEP8 again and everything in this repository
 - [ ] Try not to cry 
 - [ ] Stop using debug.py to test things and write a real goddamn test suite
-- [ ] Refactor communication between "twoms" module and runner/debug
+- [ ] Refactor communication between "twoms" module and runner/debug (also rewrite entire 'play' method
 - [ ] Rename pretty much everything
 
 Features:

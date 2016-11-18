@@ -22,6 +22,7 @@ class MsGame:
         mines: list of tuples indicating positions of mines
         squares: list of tuples of valid board squares 
                     (useful for not picking out of bounds squares)
+        before_first_guess: bool indicating if the first guess has been made
     Methods:
         __init__(): populates self.squares and prints initial blank board
         prettyprint(): prints board for user consumption
@@ -34,12 +35,17 @@ class MsGame:
         play(Tuple[str,int,int]): handles all other logic for guessing 
             (flagging v. clearing, adjusts gameOver etc.). Tuple contains
             guess type, x and y coords of guess.
+        FLAGGED: static value of star (*). Indicates squares that have been flagged.
+        DEFAULT: static value of dash (-). Indicates squares that has not been cleared or flagged.
     """
 
-    board = [['-'] * 10 for xx in range(10)]
+    FLAGGED = '*'
+    DEFAULT = '-'
+    board = [[ '-' ] * 10 for xx in range(10)]
     gameOver = False
     mines = []
     squares = []
+    before_first_guess = True
 
     def __init__(self):
         for ii, jj in pair_range(10, 10):
@@ -49,10 +55,9 @@ class MsGame:
     def prettyprint(self):
         """For printing board to user"""
         print('XX' + "0123456789")
-        #print('XX==========')
-        for ii in range(len(MsGame.board)):
+        for ii in range(len(self.board)):
             print(str(ii) + ':',end='')
-            for ch in MsGame.board[ii]:
+            for ch in self.board[ii]:
                 print(ch,end='')
             print('')
             
@@ -64,23 +69,23 @@ class MsGame:
         l = [-1,0,1]
         for ii, jj in itertools.product(l, repeat=2):
             lst.append((square[0] + ii, square[1] + jj))
-        return len(set(lst).intersection(set(MsGame.mines)))
+        return len(set(lst).intersection(set(self.mines)))
 
     def lose(self):
         """call to lose game"""
-        for mine in MsGame.mines:
-            MsGame.board[mine[0]][mine[1]] = 'X'
+        for mine in self.mines:
+            self.board[mine[0]][mine[1]] = 'X'
         self.prettyprint()
         print("Game Over")
-        MsGame.gameOver = -1
+        self.gameOver = -1
 
     def isFirst(self):
         """returns true iff called before the first guess
         TODO: repace with bool
         """
-        for row in MsGame.board:
+        for row in self.board:
             for item in row:
-                if item != '-':
+                if item != self.DEFAULT:
                     return False
         return True
 
@@ -88,11 +93,11 @@ class MsGame:
         """return true iff game has been won"""
         dashes = 0
         bangs = 0
-        for row in MsGame.board:
+        for row in self.board:
             for square in row:
-                if square == '-':
+                if square == self.DEFAULT:
                     dashes += 1
-                if square == '*':
+                if square == self.FLAGGED:
                     bangs += 1
         return bangs + dashes == 10
 
@@ -103,16 +108,20 @@ class MsGame:
         l = [-1,0,1]
         lst = []
         num = self.getCount(tup)
-        MsGame.board[tup[0]][tup[1]] = str(num)
+        self.board[tup[0]][tup[1]] = str(num)
         if num == 0:
             for ii in l:
                 for jj in l:
                     lst.append((tup[0] + ii, tup[1] + jj))
-            lst = list(set(lst).intersection(set(MsGame.squares)))
+            lst = list(set(lst).intersection(set(self.squares)))
             lst.remove(tup)
             for element in lst:
-                if self.board[element[0]][element[1]] == '-':
+                if self.board[element[0]][element[1]] == self.DEFAULT:
                     self.clear(element)
+
+    def get_board(self):
+        """returns board state"""
+        return self.board
 
     def play(self,tup):
         """ Handles guesses of all (flagging, solveing, clearing) types.
@@ -127,48 +136,50 @@ class MsGame:
         """
         tguess = (tup[1],tup[2])
         if self.isFirst():
+            """Need to call out first guess so that we don't find a mine"""
             if tup[0] != 'c':
-                return (gameOver, board)
+                return (self.gameOver, board)
             for ii in range(10):
                 x = random.randint(0,9)
                 y = random.randint(0,9)
-                while (x,y) in MsGame.mines or (x,y) == tguess:
+                while (x,y) in self.mines or (x,y) == tguess:
                     x = random.randint(0,9)
                     y = random.randint(0,9)
-                MsGame.mines.append((x,y))
-            print(MsGame.mines)
+                self.mines.append((x,y))
             self.clear((tup[1],tup[2]))
             self.prettyprint()
             if self.winCheck():
                 print("Game over, you win!")
-                MsGame.gameOver = 1
-            return ( (MsGame.gameOver, MsGame.board) )
-        if not MsGame.gameOver:            
-
+                self.gameOver = 1
+            return ( (self.gameOver, self.board) )
+        if not self.gameOver:            
+            """c -> clearing guess"""
             if tup[0] == 'c':
-                if MsGame.board[tguess[0]][tguess[1]] != '-':
+                if self.board[tguess[0]][tguess[1]] != self.DEFAULT:
                     print("Pick a different square")
-                    return (MsGame.gameOver, MsGame.board)
-                if tguess in MsGame.mines:
+                    return (self.gameOver, self.board)
+                if tguess in self.mines:
                     self.lose()
-                    return (MsGame.gameOver, MsGame.board)
+                    return (self.gameOver, self.board)
                 #Not a mine so clear it
                 self.clear(tguess)                
 
             elif tup[0] == 'f':
-                if MsGame.board[tguess[0]][tguess[1]] == '*':
-                    MsGame.board[tguess[0]][tguess[1]] = '-'
+                """f -> flag guess"""
+                if self.board[tguess[0]][tguess[1]] == self.FLAGGED:
+                    self.board[tguess[0]][tguess[1]] = self.DEFAULT
                     
-                elif MsGame.board[tguess[0]][tguess[1]] == '-':
-                    MsGame.board[tguess[0]][tguess[1]] = '*'
-                if MsGame.board[tguess[0]][tguess[1]] not in ['*','-']:
+                elif self.board[tguess[0]][tguess[1]] == self.DEFAULT:
+                    self.board[tguess[0]][tguess[1]] = self.FLAGGED
+                if self.board[tguess[0]][tguess[1]] not in [self.FLAGGED,self.DEFAULT]:
                     print("Pick a different square")                
 
             elif tup[0] == 's':
-                num = MsGame.board[tguess[0]][tguess[1]]
-                if num in ['X','*','-']:
+                """s -> solve guess"""
+                num = self.board[tguess[0]][tguess[1]]
+                if num in ['X',self.FLAGGED,self.DEFAULT]:
                     print("One of X*-")
-                    return (MsGame.gameOver, MsGame.board)
+                    return (self.gameOver, self.board)
                 adds = [-1,0,1]
                 lst = []
                 for a in adds:
@@ -177,20 +188,20 @@ class MsGame:
                 lst.remove(tguess)
                 #TODO: list comprehension 
                 smines = []
-                surround = list(set(MsGame.squares).intersection(set(lst)))
+                surround = list(set(self.squares).intersection(set(lst)))
                 for s in surround:
-                    if MsGame.board[s[0]][s[1]] == '*':
+                    if self.board[s[0]][s[1]] == self.FLAGGED:
                         smines.append(s)
                 if int(num) != len(smines):
-                    return (MsGame.gameOver,MsGame.board)
-                if set(smines).intersection(set(MsGame.mines)) != set(smines):
+                    return (self.gameOver,self.board)
+                if set(smines).intersection(set(self.mines)) != set(smines):
                     self.lose()
-                    return (MsGame.gameOver,MsGame.board)
-                surround = set(surround).difference(set(MsGame.mines))
+                    return (self.gameOver,self.board)
+                surround = set(surround).difference(set(self.mines))
                 for sq in surround:
                     self.clear(sq)
             self.prettyprint()
             if self.winCheck():
                 print("Game over, you win!")
-                MsGame.gameOver = 1
-            return ( (MsGame.gameOver, MsGame.board) )
+                self.gameOver = 1
+            return ( (self.gameOver, self.board) )
