@@ -15,6 +15,9 @@ def _pair_range(len_outter, len_inner):
         for jj in range(len_inner):
             yield ii, jj
 
+class BadGuessError(Exception):
+    pass
+
 
 class MsGame:
     """Fields:
@@ -26,7 +29,7 @@ class MsGame:
                     (useful for not picking out of bounds squares)
         before_first_guess: bool indicating if the first guess has been made
     Methods:
-        __init__(): populates self.squares and prints initial blank board
+        __init__(): populates self.squares and possibly other options
         prettyprint(): prints board for user consumption
         getCount(tuple): counts mines touching the square indicated by passed tuple
         lose(): ends game in loss
@@ -56,7 +59,6 @@ class MsGame:
             self.mines = given_mines
         for ii, jj in _pair_range(10, 10):
             self.squares.append( (ii,jj) )
-        self.prettyprint()
 
     def setup_mines(self, guessed_square):
         if not self.mines:
@@ -95,8 +97,6 @@ class MsGame:
         """call to lose game"""
         for mine in self.mines:
             self.board[mine[0]][mine[1]] = 'X'
-        self.prettyprint()
-        print("Game Over")
         self.game_over = -1
 
     def isFirst(self):
@@ -161,17 +161,14 @@ class MsGame:
                 return (self.game_over, board)
             self.setup_mines(tguess)
             self.clear((tup[1],tup[2]))
-            self.prettyprint()
             if self.winCheck():
-                print("Game over, you win!")
                 self.game_over = 1
             return ( (self.game_over, self.board) )
         if not self.game_over:            
             """c -> clearing guess"""
             if tup[0] == 'c':
                 if self.board[tguess[0]][tguess[1]] != self.DEFAULT:
-                    print("Pick a different square")
-                    return (self.game_over, self.board)
+                    raise BadGuessError("Square targeted flagged or already cleared")
                 if tguess in self.mines:
                     self.lose()
                     return (self.game_over, self.board)
@@ -182,18 +179,16 @@ class MsGame:
                 """f -> flag guess"""
                 if self.board[tguess[0]][tguess[1]] == self.FLAGGED:
                     self.board[tguess[0]][tguess[1]] = self.DEFAULT
-                    
                 elif self.board[tguess[0]][tguess[1]] == self.DEFAULT:
                     self.board[tguess[0]][tguess[1]] = self.FLAGGED
                 if self.board[tguess[0]][tguess[1]] not in [self.FLAGGED,self.DEFAULT]:
-                    print("Pick a different square")                
+                    raise BadGuessError("Targeted square has been cleared")
 
             elif tup[0] == 's':
                 """s -> solve guess"""
                 num = self.board[tguess[0]][tguess[1]]
                 if num in ['X',self.FLAGGED,self.DEFAULT]:
-                    print("One of X*-")
-                    return (self.game_over, self.board)
+                    raise BadGuessError("Targeted square cannot be solved")
                 adds = [-1,0,1]
                 lst = []
                 for a in adds:
@@ -214,8 +209,6 @@ class MsGame:
                 surround = set(surround).difference(set(self.mines))
                 for sq in surround:
                     self.clear(sq)
-            self.prettyprint()
             if self.winCheck():
-                print("Game over, you win!")
                 self.game_over = 1
             return ( (self.game_over, self.board) )

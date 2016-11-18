@@ -23,10 +23,10 @@ Cleanup:
 Features:
 ---------
 
-- [ ] Refactor I/O to importing classes (minesweeper module)
+- [x] Refactor I/O to importing classes (minesweeper module)
 - [ ] Finish games that are a tossup
 - [ ] Implement patter matching for common patterns (1-2-1, 1-1, 1-2)
-- [ ] Variable game size, number of mines and number of runs for runner
+- [ ] Variable board size, number of mines and number of runs for runner
 - [ ] Silent mode
 - [ ] Keep stats
 - [ ] Optomize clearing strategy

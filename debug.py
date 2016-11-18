@@ -18,6 +18,7 @@ def _verify(guess_string):
 
 
 game = ms.MsGame()
+game.prettyprint()
 game_over = False
 while not game_over:
     guess = ''
@@ -26,4 +27,13 @@ while not game_over:
     guess_to_pass = tuple(guess.replace(' ',',').split(','))
     guess_to_pass = (guess_to_pass[0],int(guess_to_pass[1]), int(guess_to_pass[2]))
     print(guess_to_pass)
-    game_over = game.play(guess_to_pass)[0] or game.winCheck()
+    try:
+        game_over = game.play(guess_to_pass)[0] 
+    except ms.BadGuessError as err:
+        print("Pick another square")
+    game_over = game.winCheck()
+    game.prettyprint()
+if game_over == -1:
+    print("Lost")
+elif game_over == 1:
+    print("Won")

@@ -86,7 +86,6 @@ changed = 1
 """ If the algorithm below does not change anything, we must guess.
 """
 while not info[0]:
-    print(changed)
     if not changed:
         print("hung")
         break
