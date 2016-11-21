@@ -156,7 +156,7 @@ class MsGame:
         if self.isFirst():
             """Need to call out first guess so that we don't find a mine"""
             if tup[0] != 'c':
-                return (self.game_over, board)
+                return (self.game_over, self.board)
             self.setup_mines(tguess)
             if tguess in self.mines:
                 self.lose()
