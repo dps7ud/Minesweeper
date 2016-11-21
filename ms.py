@@ -1,5 +1,6 @@
 """Minesweeper.py
 Class: MsGame - object holding all game related information
+Class: BadGuessError - error that is called for any guess made at an improper time
 """
 
 import itertools
@@ -29,7 +30,7 @@ class MsGame:
     Methods:
         __init__(): populates self.squares and possibly other options
         prettyprint(): prints board for user consumption
-        getCount(tuple): counts mines touching the square indicated by passed tuple
+        get_count(tuple): counts mines touching the square indicated by passed tuple
         lose(): ends game in loss
         isFirst(): Checks if board is fresh (returns True) or not (returns False)
         winCheck(): Checks if user has won game (currently requires all mines to be flagged)
@@ -94,7 +95,7 @@ class MsGame:
                 print(ch,end='')
             print('')
             
-    def getCount(self,square):
+    def get_count(self,square):
         """accepts tuple inicating target square
         returns number of neighbours in mines list (counts self)
         """
@@ -138,7 +139,7 @@ class MsGame:
         """
         l = [-1,0,1]
         lst = []
-        num = self.getCount(tup)
+        num = self.get_count(tup)
         self.board[tup[0]][tup[1]] = str(num)
         if num == 0:
             for ii in l:

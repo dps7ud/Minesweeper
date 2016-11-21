@@ -16,8 +16,9 @@ Cleanup:
 - [x] Take out bad comments
 - [x] Read PEP8 again and everything in this repository
 - [x] Try not to cry 
-- [ ] Stop using debug.py to test things and write a real goddamn test suite
-- [ ] Refactor communication between "twoms" module and runner/debug (also rewrite entire 'play' method
+- [x] Stop using debug.py to test things and write a real goddamn test suite
+- [ ] Refactor runner.py into a class rather than a script
+- [ ] Refactor communication between 'ms' module and runner/debug (also rewrite entire 'play' method
 - [ ] Rename pretty much everything
 
 Features:
@@ -25,8 +26,8 @@ Features:
 
 - [x] Refactor I/O to importing classes (minesweeper module)
 - [ ] Finish games that are a tossup
-- [ ] Implement patter matching for common patterns (1-2-1, 1-1, 1-2)
 - [ ] Variable board size, number of mines and number of runs for runner
+- [ ] Implement pattern matching for common patterns (1-2-1, 1-1, 1-2)
 - [ ] Silent mode
 - [ ] Keep stats
 - [ ] Optomize clearing strategy
