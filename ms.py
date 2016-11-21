@@ -46,6 +46,7 @@ class MsGame:
     DEFAULT = '-'
 
     def __init__(self, given_mines=None):
+        self.flagged = set()
         self.game_over = 0
         self.mines = []
         self.num_mines = 0
@@ -71,6 +72,18 @@ class MsGame:
         else:
             return
             
+    def get_around(self, square):
+        """ Returns a list of squares adjacent to the input square."""
+        l = [-1,0,1]
+        around = []
+        for a in l:
+            for b in l:
+                if 0 > square[0] + a or 9 < square[0] + a \
+                or 0 > square[1] + b or 9 < square[1] + b:
+                    continue
+                around.append( (square[0] + a, square[1] + b) ) 
+        return around
+
 
     def prettyprint(self):
         """For printing board to user"""
@@ -178,17 +191,23 @@ class MsGame:
 
             elif tup[0] == 'f':
                 """f -> flag guess"""
-                if self.board[tguess[0]][tguess[1]] == self.FLAGGED:
-                    self.board[tguess[0]][tguess[1]] = self.DEFAULT
-                elif self.board[tguess[0]][tguess[1]] == self.DEFAULT:
-                    self.board[tguess[0]][tguess[1]] = self.FLAGGED
                 if self.board[tguess[0]][tguess[1]] not in [self.FLAGGED,self.DEFAULT]:
                     raise BadGuessError("Targeted square has been cleared")
+                elif tguess in self.flagged:
+                    self.board[tguess[0]][tguess[1]] = self.DEFAULT
+                    self.flagged.remove(tguess)
+                elif tguess not in self.flagged:
+                    self.flagged.add(tguess)
+                    self.board[tguess[0]][tguess[1]] = self.FLAGGED
 
             elif tup[0] == 's':
                 """s -> solve guess"""
                 num = self.board[tguess[0]][tguess[1]]
+                # If the square is still covered, is flagged throw the BadGuessError
                 if num in ['X',self.FLAGGED,self.DEFAULT]:
+                    raise BadGuessError("Targeted square cannot be solved")
+                # If the square doesn't have enough flagged squares
+                if int(num) != len(set(self.get_around(tguess)).intersection(set(self.flagged))):
                     raise BadGuessError("Targeted square cannot be solved")
                 adds = [-1,0,1]
                 lst = []

@@ -1,7 +1,5 @@
 """ runner.py
 A script to play a number of minesweeper games 
-TODO: remove unwanted (nearly all) I/O from this file
-      get rid of copy of board (called 'info').
 """
 
 import ms
@@ -45,17 +43,6 @@ def solve(square):
     return val
 
 
-def get_around(square):
-    """ Returns a list of squares adjacent to the input square."""
-    l = [-1,0,1]
-    around = []
-    for a in l:
-        for b in l:
-            if 0 > square[0] + a or 9 < square[0] + a or 0 > square[1] + b or 9 < square[1] + b:
-                continue
-            around.append( (square[0] + a, square[1] + b) ) 
-    return around
-
 
 def retreive(square, board):
     """find character at tuple"""
@@ -98,7 +85,7 @@ while not info[0]:
                 continue
             else:
                 n = int(c)
-                around = get_around((ii,jj))
+                around = game.get_around((ii,jj))
                 around.remove( (ii,jj) )
                 hidden = []
                 flagCount = 0
@@ -122,7 +109,7 @@ while not info[0]:
             if c in ['*','0','-']:
                 continue
             n = int(c)
-            around = get_around( (ii,jj))
+            around = game.get_around( (ii,jj))
             around.remove( (ii,jj) )
             flagCount = 0
             hiddenCount = 0
