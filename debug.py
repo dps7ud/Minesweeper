@@ -8,7 +8,7 @@ Guess Format:
 """
 
 import re
-import twoms as ms
+import ms
 
 
 def _verify(guess_string):

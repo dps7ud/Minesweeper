@@ -4,7 +4,7 @@ TODO: remove unwanted (nearly all) I/O from this file
       get rid of copy of board (called 'info').
 """
 
-import twoms as ms
+import ms
 import random
 
 game = ms.MsGame()
