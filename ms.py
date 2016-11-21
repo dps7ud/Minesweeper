@@ -203,8 +203,8 @@ class MsGame:
             elif tup[0] == 's':
                 """s -> solve guess"""
                 num = self.board[tguess[0]][tguess[1]]
-                # If the square is still covered, is flagged throw the BadGuessError
-                if num in ['X',self.FLAGGED,self.DEFAULT]:
+                # If the square is still covered, is flagged or is zero throw the BadGuessError
+                if num in ['0','X',self.FLAGGED,self.DEFAULT]:
                     raise BadGuessError("Targeted square cannot be solved")
                 # If the square doesn't have enough flagged squares
                 if int(num) != len(set(self.get_around(tguess)).intersection(set(self.flagged))):

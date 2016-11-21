@@ -28,11 +28,18 @@ class MineSweeperTest(unittest.TestCase):
         with self.assertRaises(ms.BadGuessError) as context:
             game.play( ('c',4,4) )
 
-    def test_incorrect_solve(self):
+    def test_incorrect_solve_01(self):
         game = ms.MsGame( given_mines=[(1,1)] )
         game.play( ('c',3,3) )
         with self.assertRaises(ms.BadGuessError) as context:
             game.play( ('s',4,4) )
+
+    def test_incorrect_solve_02(self):
+        game = ms.MsGame( given_mines=[(1,1)] )
+        game.play( ('c',3,3) )
+        with self.assertRaises(ms.BadGuessError) as context:
+            game.play( ('s',1,1) )
+
 
 if __name__ == '__main__':
     unittest.main()
