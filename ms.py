@@ -135,9 +135,7 @@ class MsGame:
             'tguess' and 'tup' both needed?
             Returns board status on every call
             Is massive and poorly documented
-            Performs setup
             Performs checks using 'board' rather than 'flagged'
-            Does a lot of I/O
         """
         tguess = (tup[1],tup[2])
         if self.isFirst():

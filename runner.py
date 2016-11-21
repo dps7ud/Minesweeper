@@ -8,6 +8,8 @@ import random
 game = ms.MsGame()
 cleared = []
 flagged = []
+info = None
+board = game.get_board()
 
 
 def clear(square):
@@ -18,10 +20,6 @@ def clear(square):
     val = game.play(('c',square[0],square[1]))
     cleared.append(square)
     return val
-
-
-info = clear((5,5))
-board = info[1] 
 
 
 def flag(square):
@@ -35,6 +33,11 @@ def flag(square):
     return val
 
 
+def retreive(square, board):
+    """find character at tuple"""
+    return board[square[0]][square[1]]
+
+
 def solve(square):
     """Submits solving guess to game object.
     TODO: oneliner function
@@ -43,18 +46,15 @@ def solve(square):
     return val
 
 
-
-def retreive(square, board):
-    """find character at tuple"""
-    return board[square[0]][square[1]]
-
-
 """The first guess is always to clear 5,5. if this guess does not
 result in an opening, we guess randomly until we get an opening or
 we lose
 """
+info = clear((5,5))
+board = game.get_board()
+
 while not info[0]:
-    shown = set([])
+    shown = set()
     for row in board:
         shown = shown.union(set(row))
     if '0' in shown:
@@ -67,7 +67,6 @@ while not info[0]:
             x = random.randint(0,9)
             y = random.randint(0,9)
         info = clear((x,y))
-lst = [ [] for x in range(8)]
 changed = 1
 
 """ If the algorithm below does not change anything, we must guess.
