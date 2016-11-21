@@ -1,7 +1,5 @@
 """Minesweeper.py
 Class: MsGame - object holding all game related information
-
-TODO: remove all I/O from this file
 """
 
 import itertools
@@ -46,14 +44,14 @@ class MsGame:
 
     FLAGGED = '*'
     DEFAULT = '-'
-    board = [[ '-' ] * 10 for xx in range(10)]
-    game_over = 0
-    mines = []
-    num_mines = 0
-    squares = []
-    before_first_guess = True
 
     def __init__(self, given_mines=None):
+        self.game_over = 0
+        self.mines = []
+        self.num_mines = 0
+        self.before_first_guess = True
+        self.board = [[ '-' ] * 10 for xx in range(10)]
+        self.squares = []
         if given_mines is not None:
             self.num_mines = len(list(set(self.mines)))
             self.mines = given_mines
@@ -160,6 +158,9 @@ class MsGame:
             if tup[0] != 'c':
                 return (self.game_over, board)
             self.setup_mines(tguess)
+            if tguess in self.mines:
+                self.lose()
+                return (self.game_over, self.board)
             self.clear((tup[1],tup[2]))
             if self.winCheck():
                 self.game_over = 1
