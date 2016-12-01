@@ -111,14 +111,27 @@ class MsGame:
             for element in lst:
                 if self.board[element[0]][element[1]] == self.DEFAULT:
                     self.clear(element)
+                    
+    def first_guess(self, tup):
+        tguess = (tup[1],tup[2])
+        if tup[0] != 'c':
+            return self.game_over
+        self.setup_mines(tguess)
+        if tguess in self.mines:
+            self.lose()
+            return self.game_over
+        self.clear(tguess)
+        if self.win_check():
+            self.game_over = 1
+        return self.game_over
 
     def isFirst(self):
         """returns true iff called before the first guess
         TODO: repace with bool
         """
         for row in self.board:
-            for item in row:
-                if item != self.DEFAULT:
+            for square in row:
+                if square != self.DEFAULT:
                     return False
         return True
 
@@ -139,17 +152,7 @@ class MsGame:
         """
         tguess = (tup[1],tup[2])
         if self.isFirst():
-            """Need to call out first guess so that we don't find a mine"""
-            if tup[0] != 'c':
-                return self.game_over
-            self.setup_mines(tguess)
-            if tguess in self.mines:
-                self.lose()
-                return self.game_over
-            self.clear((tup[1],tup[2]))
-            if self.win_check():
-                self.game_over = 1
-            return self.game_over
+            return self.first_guess(tup)
         if not self.game_over:            
             """c -> clearing guess"""
             if tup[0] == 'c':

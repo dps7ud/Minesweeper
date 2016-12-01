@@ -9,10 +9,10 @@ class MineSweeperTest(unittest.TestCase):
         self.assertEqual(val, -1)
 
     def test_flag_first_guess(self):
-        board = [[ '-' ] * 10 for xx in range(10)]
+        init_board = [[ '-' ] * 10 for xx in range(10)]
         game = ms.MsGame()
         val = game.play( ('f',2,2) )
-        self.assertEqual(game.get_board(), board)
+        self.assertEqual(game.get_board(), init_board)
         self.assertEqual(val, 0)
 
     def test_solve_first_guess(self):

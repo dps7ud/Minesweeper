@@ -14,6 +14,7 @@ def _pair_range(len_outter, len_inner):
 class Player:
 
     def __init__(self, given_mines=None):
+        """Initializer, takes optional mine arguments"""
         self.changed = True
         self.game_over = 0
         self.cleared = set()
@@ -55,7 +56,7 @@ class Player:
 
     def run_game(self):
         """Runs the game"""
-        first_guess()
+        self.first_guess()
         if not self.game_over:
             self.later_guesses()
         self.cleanup()
