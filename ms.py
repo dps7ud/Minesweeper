@@ -1,4 +1,4 @@
-"""Minesweeper.py
+"""ms.py
 Class: MsGame - object holding all game related information
 Class: BadGuessError - error that is called for any guess made at an improper time
 """
@@ -203,7 +203,7 @@ class MsGame:
                     self.clear(sq)
             if self.win_check():
                 self.game_over = 1
-            return ( (self.game_over, self.board) )
+        return ( (self.game_over, self.board) )
 
     def prettyprint(self):
         """For printing board to user"""
