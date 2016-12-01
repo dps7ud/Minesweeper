@@ -17,8 +17,8 @@ Cleanup:
 - [x] Read PEP8 again and everything in this repository
 - [x] Try not to cry 
 - [x] Stop using debug.py to test things and write a real goddamn test suite
-- [ ] Refactor runner.py into a class rather than a script
-- [ ] Refactor communication between 'ms' module and runner/debug (also rewrite entire 'play' method
+- [x] Refactor runner.py into a class rather than a script
+- [ ] Refactor communication between 'ms' module and runner/debug (also rewrite entire 'play' method)
 - [ ] Rename pretty much everything
 
 Features:

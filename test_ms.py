@@ -6,21 +6,21 @@ class MineSweeperTest(unittest.TestCase):
     def test_first_turn_lose(self):
         game = ms.MsGame( given_mines=[(3,3)] )
         val = game.play( ('c', 3, 3) )
-        self.assertEqual(val[0], -1)
+        self.assertEqual(val, -1)
 
     def test_flag_first_guess(self):
         board = [[ '-' ] * 10 for xx in range(10)]
         game = ms.MsGame()
         val = game.play( ('f',2,2) )
-        self.assertEqual(val[1], board)
-        self.assertEqual(val[0], 0)
+        self.assertEqual(game.get_board(), board)
+        self.assertEqual(val, 0)
 
     def test_solve_first_guess(self):
         board = [[ '-' ] * 10 for xx in range(10)]
         game = ms.MsGame()
         val = game.play( ('s',2,2) )
-        self.assertEqual(val[1], board)
-        self.assertEqual(val[0], 0)
+        self.assertEqual(game.get_board(), board)
+        self.assertEqual(val, 0)
 
     def test_incorrect_clear(self):
         game = ms.MsGame( given_mines=[(1,1)] )

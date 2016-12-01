@@ -47,7 +47,6 @@ class Player:
     def solve(self, square):
         """Submits solving guess to game object.
         """
-        print("Solving:  ", square)
         val = self.game.play(('s', square[0], square[1]))
         return val
 
@@ -66,7 +65,7 @@ class Player:
         result in an opening, we guess randomly until we get an opening or
         we lose
         """
-        self.game_over = self.clear((5,5))[0]
+        self.game_over = self.clear((5,5))
         self.game.prettyprint()
         with open("mines.txt",'a') as output:
             output.write(str(self.game.mines) + '\n')
@@ -84,7 +83,7 @@ class Player:
                 x = random.randint(0,9)
                 y = random.randint(0,9)
             print("x, y", x, y)
-            self.game_over = self.clear((x,y))[0]
+            self.game_over = self.clear((x,y))
             self.game.prettyprint()
             self.board = self.game.get_board()
             for row in self.board:
@@ -123,7 +122,7 @@ class Player:
                     mines around 'a', we can flag everything"""
                     if len(hidden) + flagCount == number and len(hidden) > 0:
                         for h in hidden:
-                            self.game_over = self.flag(h)[0]
+                            self.game_over = self.flag(h)
                             self.board = self.game.get_board()
                         self.changed = True
             """Finds all nonzero cleared squares and inspects surrounding squares"""
@@ -149,7 +148,7 @@ class Player:
                 if flagCount == number and hiddenCount != 0:
                     if self.game_over:
                         break
-                    self.game_over = self.solve((ii,jj))[0]
+                    self.game_over = self.solve((ii,jj))
                     self.board = self.game.get_board()
                     self.changed = True
         if self.game_over == -1:

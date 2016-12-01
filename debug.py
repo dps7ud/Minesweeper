@@ -28,7 +28,7 @@ while not game_over:
     guess_to_pass = (guess_to_pass[0],int(guess_to_pass[1]), int(guess_to_pass[2]))
     print(guess_to_pass)
     try:
-        game_over = game.play(guess_to_pass)[0] 
+        game_over = game.play(guess_to_pass) 
     except ms.BadGuessError as err:
         print("Pick another square")
     game_over = game.win_check()

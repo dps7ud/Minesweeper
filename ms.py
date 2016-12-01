@@ -141,15 +141,15 @@ class MsGame:
         if self.isFirst():
             """Need to call out first guess so that we don't find a mine"""
             if tup[0] != 'c':
-                return (self.game_over, self.board)
+                return self.game_over
             self.setup_mines(tguess)
             if tguess in self.mines:
                 self.lose()
-                return (self.game_over, self.board)
+                return self.game_over
             self.clear((tup[1],tup[2]))
             if self.win_check():
                 self.game_over = 1
-            return ( (self.game_over, self.board) )
+            return self.game_over
         if not self.game_over:            
             """c -> clearing guess"""
             if tup[0] == 'c':
@@ -157,7 +157,7 @@ class MsGame:
                     raise BadGuessError("Square targeted flagged or already cleared")
                 if tguess in self.mines:
                     self.lose()
-                    return (self.game_over, self.board)
+                    return self.game_over
                 #Not a mine so clear it
                 self.clear(tguess)                
 
@@ -194,16 +194,16 @@ class MsGame:
                     if self.board[s[0]][s[1]] == self.FLAGGED:
                         smines.append(s)
                 if int(num) != len(smines):
-                    return (self.game_over,self.board)
+                    return self.game_over
                 if set(smines).intersection(set(self.mines)) != set(smines):
                     self.lose()
-                    return (self.game_over,self.board)
+                    return self.game_over
                 surround = set(surround).difference(set(self.mines))
                 for sq in surround:
                     self.clear(sq)
             if self.win_check():
                 self.game_over = 1
-        return ( (self.game_over, self.board) )
+        return self.game_over
 
     def prettyprint(self):
         """For printing board to user"""
