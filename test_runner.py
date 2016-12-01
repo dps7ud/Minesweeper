@@ -1,9 +1,5 @@
-import newrunner as nr
+import runner
 
-with open('mines.txt','r') as input_file:
-    k = input_file.readline()
-#lst = eval(k)
-#p = nr.Player(lst)
-p = nr.Player()
+p = runner.Player()
 p.first_guess()
 p.later_guesses()

@@ -126,6 +126,8 @@ class Player:
             #    for jj in range(10):
                 character = self.retreive((ii,jj), self.board)
                 if character in ['X','*','-','0']:
+                    if character == 'X':
+                        print("FOUND EXPLODED ERROR")
                     continue
                 else:
                     number = int(character)
