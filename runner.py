@@ -95,7 +95,6 @@ class Player:
         shown = set()
         for row in self.board:
             shown = shown.union(set(row))
-        print("shown: ",shown)
         x = random.randint(0,9)
         y = random.randint(0,9)
         while '0' not in shown and not self.game_over:
@@ -103,19 +102,13 @@ class Player:
                 or (self.board[x][y] != '-') ):
                 x = random.randint(0,9)
                 y = random.randint(0,9)
-            print("x, y", x, y)
             self.game_over = self.clear((x,y))
-            self.game.prettyprint()
             self.board = self.game.get_board()
             for row in self.board:
                 shown = shown.union(set(row))
-            print("shown: ",shown)
 
     def later_guesses(self):
-        self.game.prettyprint()
-        print("--------------------")
         while not self.game_over:
-            self.game.prettyprint()
             if not self.changed:
                 print("hung")
                 break
@@ -126,8 +119,6 @@ class Player:
             #    for jj in range(10):
                 character = self.retreive((ii,jj), self.board)
                 if character in ['X','*','-','0']:
-                    if character == 'X':
-                        print("FOUND EXPLODED ERROR")
                     continue
                 else:
                     number = int(character)
