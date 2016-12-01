@@ -39,6 +39,7 @@ class MsGame:
         get_count(tuple): counts mines touching the square indicated by passed tuple
         clear(tuple): Recursive function that attempts to clear square indicated 
                     by passed tuple. Autoclears zeros and ends game if square is mined
+        first_guess( tuple(str, int, int) ): makes first guess
         isFirst(): Checks if board is fresh (returns True) or not (returns False)
         lose(): ends game in loss
         play( tuple(str,int,int) ): handles all other logic for guessing 
@@ -113,6 +114,7 @@ class MsGame:
                     self.clear(element)
                     
     def first_guess(self, tup):
+        """Makes first guess of any game"""
         tguess = (tup[1],tup[2])
         if tup[0] != 'c':
             return self.game_over

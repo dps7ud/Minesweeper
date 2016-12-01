@@ -12,12 +12,32 @@ def _pair_range(len_outter, len_inner):
             yield ii, jj
 
 class Player:
+    """Methods:
+        clear(square) attempts to clear given square
+        flag(square) attempts to flag given square
+        retreive(square) gets the character at the given square
+        solve(square) attempts to solve given square
+        cleanup() runs various cleanup processes. May later include 
+            scorekeeping or other stats
+        run_game() call to play one game to completion
+        first_guess() guesses ('c',5,5) and random clearing guesses 
+            until an 'opening' is found
+        later_guesses() keeps guessing until end of game.
 
+       Fields:
+        changed: True whenever progress has been made. Used to detect if game
+            requires patters or guessing.
+        game_over: indicates if game is over or not
+        cleared: set of squares that have been cleared
+        flagged: set of squares that have been flagged
+
+    """
     def __init__(self, given_mines=None):
         """Initializer, takes optional mine arguments"""
         self.changed = True
         self.game_over = 0
         self.cleared = set()
+        self.flagged = set()
         if given_mines is not None:
             self.game = ms.MsGame(given_mines)
         else:
@@ -30,13 +50,15 @@ class Player:
         if square in self.cleared:
             raise ms.BadGuessError("newrunner: 22")
         val = self.game.play(('c',square[0],square[1]))
+        self.board = self.game.get_board()
         self.cleared.add(square)
         return val
     
-    
     def flag(self, square):
         """Flag (if not flagged) or unflag (if flagged) given square"""
+        self.flagged ^= {square}
         val = self.game.play(('f',square[0],square[1]))
+        self.board = self.game.get_board()
         return val
     
     
@@ -49,6 +71,7 @@ class Player:
         """Submits solving guess to game object.
         """
         val = self.game.play(('s', square[0], square[1]))
+        self.board = self.game.get_board()
         return val
 
     def cleanup(self):
@@ -66,11 +89,8 @@ class Player:
         result in an opening, we guess randomly until we get an opening or
         we lose
         """
-        self.game_over = self.clear((5,5))
-        self.game.prettyprint()
-        with open("mines.txt",'a') as output:
-            output.write(str(self.game.mines) + '\n')
-        #print(self.game.mines)
+        self.game_over = self.game.first_guess( ('c',5,5) )
+        #self.game_over = self.clear((5,5))
         self.board = self.game.get_board()
         shown = set()
         for row in self.board:
