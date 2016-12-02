@@ -18,8 +18,10 @@ Cleanup:
 - [x] Try not to cry 
 - [x] Stop using debug.py to test things and write a real goddamn test suite
 - [x] Refactor runner.py into a class rather than a script
-- [ ] Refactor communication between 'ms' module and runner/debug (also rewrite entire 'play' method)
+- [x] Refactor communication between 'ms' module and runner/debug 
+- [ ] Rewrite entire 'play' method
 - [ ] Rename pretty much everything
+- [ ] Allow MsGame to accept a specific random seed to get reproducible tests
 
 Features:
 ---------
