@@ -109,8 +109,8 @@ class Player:
     def later_guesses(self):
         while not self.game_over:
             if not self.changed:
-                print("hung")
                 self.game.prettyprint()
+                print("hung")
                 break
             self.changed = False
             """Finds all nonzero cleared squares and inspects surrounding squares"""

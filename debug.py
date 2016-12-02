@@ -27,10 +27,16 @@ while not game_over:
     guess_to_pass = tuple(guess.replace(' ',',').split(','))
     guess_to_pass = (guess_to_pass[0],int(guess_to_pass[1]), int(guess_to_pass[2]))
     print(guess_to_pass)
-    try:
-        game_over = game.play(guess_to_pass) 
-    except ms.BadGuessError as err:
-        print("Pick another square")
+    if game.before_first_guess:
+        try:
+            game_over = game.first_guess(guess_to_pass) 
+        except ms.BadGuessError as err:
+            print("Pick another square")
+    else:
+        try:
+            game_over = game.play(guess_to_pass) 
+        except ms.BadGuessError as err:
+            print("Pick another square")
     game_over = game.win_check()
     game.prettyprint()
 if game_over == -1:

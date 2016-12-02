@@ -114,9 +114,9 @@ class MsGame:
                     
     def first_guess(self, tup):
         """Makes first guess of any game"""
-        tguess = (tup[1],tup[2])
         if tup[0] != 'c':
             return self.game_over
+        tguess = (tup[1],tup[2])
         #Since tup[0] == 'c' we know the board will be changed
         self.before_first_guess = False
         self.setup_mines(tguess)
@@ -145,8 +145,6 @@ class MsGame:
             Performs checks using 'board' rather than 'flagged'
         """
         tguess = (tup[1],tup[2])
-        if self.before_first_guess:
-            return self.first_guess(tup)
         if not self.game_over:            
             """c -> clearing guess"""
             if tup[0] == 'c':
