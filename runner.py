@@ -32,12 +32,13 @@ class Player:
         flagged: set of squares that have been flagged
 
     """
-    def __init__(self, given_mines=None):
+    def __init__(self, given_mines=None, verbose=False):
         """Initializer, takes optional mine arguments"""
         self.changed = True
         self.game_over = 0
         self.cleared = set()
         self.flagged = set()
+        self.verbose = verbose
         if given_mines is not None:
             self.game = ms.MsGame(given_mines)
         else:
@@ -46,7 +47,6 @@ class Player:
 
     def clear(self, square):
         """Submits clearing guess to game object"""
-        #print("square :", square)
         if square in self.cleared:
             raise ms.BadGuessError("newrunner: 22")
         val = self.game.play(('c',square[0],square[1]))
@@ -75,7 +75,7 @@ class Player:
         return val
 
     def cleanup(self):
-        self.game.prettyprint()
+        pass
 
     def run_game(self):
         """Runs the game"""
@@ -109,8 +109,10 @@ class Player:
     def later_guesses(self):
         while not self.game_over:
             if not self.changed:
-                self.game.prettyprint()
-                print("hung")
+                #Game hung, implement strats later
+                if self.verbose:
+                    self.game.prettyprint()
+                    print("hung")
                 break
             self.changed = False
             """Finds all nonzero cleared squares and inspects surrounding squares"""
@@ -165,9 +167,10 @@ class Player:
                     self.game_over = self.solve((ii,jj))
                     self.board = self.game.get_board()
                     self.changed = True
-        if self.game_over == -1:
+        if self.verbose:
             self.game.prettyprint()
-            print("Lost")
-        elif self.game_over == 1:
-            self.game.prettyprint()
-            print("Won")
+            if self.game_over == -1:
+                print("Lost")
+            elif self.game_over == 1:
+                print("Won")
+
