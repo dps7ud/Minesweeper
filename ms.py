@@ -57,27 +57,28 @@ class MsGame:
         self.before_first_guess = True
         self.board = [[ '-' ] * 10 for xx in range(10)]
         self.flagged = set()
+        self.cleared = set()
         self.game_over = 0
         self.mines = []
         self.num_mines = 0
-        self.squares = []
+        self.squares = set()
 
         if given_mines is not None:
             self.num_mines = len(list(set(self.mines)))
             self.mines = given_mines
         for ii, jj in _pair_range(10, 10):
-            self.squares.append( (ii,jj) )
+            self.squares.add( (ii,jj) )
 
     def get_around(self, square):
-        """ Returns a list of squares adjacent to the input square."""
-        l = [-1,0,1]
-        around = []
-        for a in l:
-            for b in l:
-                if 0 > square[0] + a or 9 < square[0] + a \
-                or 0 > square[1] + b or 9 < square[1] + b:
-                    continue
-                around.append( (square[0] + a, square[1] + b) ) 
+        """ Returns a set of squares adjacent to the input square,
+        including the input square.
+        """
+        l = (-1,0,1)
+        around = set()
+        for aa in l:
+            for bb in l:
+                around.add( (square[0] + aa, square[1] + bb) ) 
+        around = around.intersection(self.squares)
         return around
 
     def get_board(self):
@@ -94,22 +95,26 @@ class MsGame:
             lst.append((square[0] + ii, square[1] + jj))
         return len(set(lst).intersection(set(self.mines)))
 
-    def clear(self,tup):
+    def clear(self, tguess):
         """Clear indicated square. If square holds zero, 
         recursively call on neighbors to find space.
         """
-        l = [-1,0,1]
-        lst = []
-        num = self.get_count(tup)
-        self.board[tup[0]][tup[1]] = str(num)
+        if self.board[tguess[0]][tguess[1]] != self.DEFAULT:
+            raise BadGuessError("Targeted square is flagged or already cleared")
+        if tguess in self.mines:
+            self.lose()
+            return self.game_over
+        self.cleared.add(tguess)
+
+        #Not a mine so clear it
+        to_clear = self.get_around(tguess)
+        num = self.get_count(tguess)
+        self.board[tguess[0]][tguess[1]] = str(num)
         if num == 0:
-            for ii in l:
-                for jj in l:
-                    lst.append((tup[0] + ii, tup[1] + jj))
-            lst = list(set(lst).intersection(set(self.squares)))
-            lst.remove(tup)
-            for element in lst:
-                if self.board[element[0]][element[1]] == self.DEFAULT:
+            to_clear = list(set(to_clear).intersection(self.squares))
+            to_clear.remove(tguess)
+            for element in to_clear:
+                if element not in self.cleared:
                     self.clear(element)
                     
     def first_guess(self, tup):
@@ -135,12 +140,10 @@ class MsGame:
             self.board[mine[0]][mine[1]] = 'X'
         self.game_over = -1
 
-    def play(self,tup):
+    def play(self, tup):
         """ Handles guesses of all (flagging, solveing, clearing) types.
         Bad things here:
-            Checks if any given guess is the first.
             'tguess' and 'tup' both needed?
-            Returns board status on every call
             Is massive and poorly documented
             Performs checks using 'board' rather than 'flagged'
         """
@@ -148,14 +151,7 @@ class MsGame:
         if not self.game_over:            
             """c -> clearing guess"""
             if tup[0] == 'c':
-                if self.board[tguess[0]][tguess[1]] != self.DEFAULT:
-                    raise BadGuessError("Square targeted flagged or already cleared")
-                if tguess in self.mines:
-                    self.lose()
-                    return self.game_over
-                #Not a mine so clear it
-                self.clear(tguess)                
-
+                self.clear(tguess)
             elif tup[0] == 'f':
                 """f -> flag guess"""
                 if self.board[tguess[0]][tguess[1]] not in [self.FLAGGED,self.DEFAULT]:
@@ -174,7 +170,7 @@ class MsGame:
                 if num in ['0','X',self.FLAGGED,self.DEFAULT]:
                     raise BadGuessError("Targeted square cannot be solved")
                 # If the square doesn't have enough flagged squares
-                if int(num) != len(set(self.get_around(tguess)).intersection(set(self.flagged))):
+                if int(num) != len(self.get_around(tguess).intersection(self.flagged)):
                     raise BadGuessError("Targeted square cannot be solved")
                 adds = [-1,0,1]
                 lst = []
@@ -184,10 +180,11 @@ class MsGame:
                 lst.remove(tguess)
                 #TODO: list comprehension 
                 smines = []
-                surround = list(set(self.squares).intersection(set(lst)))
+                surround = list(self.squares.intersection(set(lst)))
                 for s in surround:
                     if self.board[s[0]][s[1]] == self.FLAGGED:
                         smines.append(s)
+                #Duplicate test to above
                 if int(num) != len(smines):
                     return self.game_over
                 if set(smines).intersection(set(self.mines)) != set(smines):
@@ -195,7 +192,8 @@ class MsGame:
                     return self.game_over
                 surround = set(surround).difference(set(self.mines))
                 for sq in surround:
-                    self.clear(sq)
+                    if sq not in self.cleared:
+                        self.clear(sq)
             if self.win_check():
                 self.game_over = 1
         return self.game_over
