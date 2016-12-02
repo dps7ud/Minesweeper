@@ -172,25 +172,20 @@ class MsGame:
                 if int(num) != len(self.get_around(tguess).intersection(self.flagged)):
                     raise BadGuessError("Targeted square cannot be solved")
                 adds = [-1,0,1]
-                lst = []
-                for a in adds:
-                    for b in adds:
-                        lst.append( (tguess[0] + a, tguess[1] + b) )
-                lst.remove(tguess)
-                #TODO: list comprehension 
-                smines = []
-                surround = list(self.squares.intersection(set(lst)))
-                for s in surround:
+                to_clear = self.get_around(tguess)
+                to_clear.remove(tguess)
+                smines = set()
+                for s in to_clear:
                     if self.board[s[0]][s[1]] == self.FLAGGED:
-                        smines.append(s)
+                        smines.add(s)
                 #Duplicate test to above
                 if int(num) != len(smines):
                     return self.game_over
-                if set(smines).intersection(set(self.mines)) != set(smines):
+                if smines.intersection(set(self.mines)) != smines:
                     self.lose()
                     return self.game_over
-                surround = set(surround).difference(set(self.mines))
-                for sq in surround:
+                to_clear = set(to_clear).difference(set(self.mines))
+                for sq in to_clear:
                     if sq not in self.cleared:
                         self.clear(sq)
             if self.win_check():
