@@ -90,7 +90,6 @@ class Player:
         we lose
         """
         self.game_over = self.game.first_guess( ('c',5,5) )
-        #self.game_over = self.clear((5,5))
         self.board = self.game.get_board()
         shown = set()
         for row in self.board:
@@ -111,6 +110,7 @@ class Player:
         while not self.game_over:
             if not self.changed:
                 print("hung")
+                self.game.prettyprint()
                 break
             self.changed = False
             """Finds all nonzero cleared squares and inspects surrounding squares"""

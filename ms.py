@@ -40,7 +40,6 @@ class MsGame:
         clear(tuple): Recursive function that attempts to clear square indicated 
                     by passed tuple. Autoclears zeros and ends game if square is mined
         first_guess( tuple(str, int, int) ): makes first guess
-        isFirst(): Checks if board is fresh (returns True) or not (returns False)
         lose(): ends game in loss
         play( tuple(str,int,int) ): handles all other logic for guessing 
             (flagging v. clearing, adjusts game_over etc.). Tuple contains
@@ -118,7 +117,10 @@ class MsGame:
         tguess = (tup[1],tup[2])
         if tup[0] != 'c':
             return self.game_over
+        #Since tup[0] == 'c' we know the board will be changed
+        self.before_first_guess = False
         self.setup_mines(tguess)
+        #Following check required for games with constructed mines
         if tguess in self.mines:
             self.lose()
             return self.game_over
@@ -126,16 +128,6 @@ class MsGame:
         if self.win_check():
             self.game_over = 1
         return self.game_over
-
-    def isFirst(self):
-        """returns true iff called before the first guess
-        TODO: repace with bool
-        """
-        for row in self.board:
-            for square in row:
-                if square != self.DEFAULT:
-                    return False
-        return True
 
     def lose(self):
         """call to lose game"""
@@ -146,14 +138,14 @@ class MsGame:
     def play(self,tup):
         """ Handles guesses of all (flagging, solveing, clearing) types.
         Bad things here:
-            Checks if any given guess is the first (bad).
+            Checks if any given guess is the first.
             'tguess' and 'tup' both needed?
             Returns board status on every call
             Is massive and poorly documented
             Performs checks using 'board' rather than 'flagged'
         """
         tguess = (tup[1],tup[2])
-        if self.isFirst():
+        if self.before_first_guess:
             return self.first_guess(tup)
         if not self.game_over:            
             """c -> clearing guess"""
