@@ -107,11 +107,10 @@ class MsGame:
         self.cleared.add(tguess)
 
         #Not a mine so clear it
-        to_clear = self.get_around(tguess)
         num = self.get_count(tguess)
         self.board[tguess[0]][tguess[1]] = str(num)
         if num == 0:
-            to_clear = list(set(to_clear).intersection(self.squares))
+            to_clear = self.get_around(tguess)
             to_clear.remove(tguess)
             for element in to_clear:
                 if element not in self.cleared:
