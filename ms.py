@@ -41,6 +41,7 @@ class MsGame:
         clear( tuple(x, y) ) -- Recursive function that attempts to clear square indicated 
                     by passed tuple. Autoclears zeros and ends game if square is mined.
         first_guess( tuple(str, int, int) ) -- makes first guess
+        flag( tuple(x, y) ) -- Attempts to flag or unflag passed tuple
         lose() -- ends game in loss
         play( tuple(str,int,int) ) -- handles all other logic for guessing 
             (flagging v. clearing, adjusts game_over etc.). Tuple contains
@@ -48,7 +49,8 @@ class MsGame:
         prettyprint() -- prints board for user consumption
         setup_mines() -- sets up mines after first guess in the case that 
             no list of mines was passed
-        win_check() -- Checks if user has won game (currently requires all mines to be flagged)
+        solve( tuple(x, y) ) -- Attempts to solve given square as MS minesweeper two click
+        win_check() -- Checks if user has won game
     """
 
     FLAGGED = '*'
@@ -60,16 +62,16 @@ class MsGame:
         """
         self.before_first_guess = True
         self.board = [[ '-' ] * 10 for xx in range(10)]
-        self.flagged = set()
         self.cleared = set()
+        self.flagged = set()
         self.game_over = 0
         self.mines = []
         self.num_mines = 0
         self.squares = set()
 
         if given_mines is not None:
-            self.num_mines = len(list(set(self.mines)))
-            self.mines = given_mines
+            self.num_mines = len(self.mines)
+            self.mines = list(given_mines)
         for ii, jj in _pair_range(10, 10):
             self.squares.add( (ii,jj) )
 
@@ -90,7 +92,7 @@ class MsGame:
 
     def get_count(self,square):
         """accepts tuple inicating target square
-        returns number of neighbours in mines list (counts self)
+        returns number of neighbours in self.mines (counts self)
         """
         around = self.get_around(square)
         return len(around.intersection(self.mines))
@@ -99,13 +101,12 @@ class MsGame:
         """Clear indicated square. If square holds zero, 
         recursively call on neighbors to find space.
         """
-        if self.board[tuple_guess[0]][tuple_guess[1]] != self.DEFAULT:
+        if tuple_guess in self.flagged.union(self.cleared):
             raise BadGuessError("Targeted square is flagged or already cleared")
         if tuple_guess in self.mines:
             self.lose()
             return self.game_over
         self.cleared.add(tuple_guess)
-
         #Not a mine so clear it
         num = self.get_count(tuple_guess)
         self.board[tuple_guess[0]][tuple_guess[1]] = str(num)
@@ -117,9 +118,11 @@ class MsGame:
                     self.clear(element)
                     
     def first_guess(self, guess):
-        """Makes first guess of any game"""
+        """Makes first guess and sets up mines after guess is made
+        TODO: merge with clear()
+        """
         if guess[0] != 'c':
-            return self.game_over
+            raise BadGuessError("First guess must be to clear")
         tuple_guess = (guess[1],guess[2])
         #Since guess[0] == 'c' we know the board will be changed
         self.before_first_guess = False
@@ -145,44 +148,26 @@ class MsGame:
             self.board[tuple_guess[0]][tuple_guess[1]] = self.FLAGGED
 
     def lose(self):
-        """call to lose game"""
+        """Call to lose game"""
         for mine in self.mines:
             self.board[mine[0]][mine[1]] = 'X'
         self.game_over = -1
 
     def play(self, tup):
-        """ Handles guesses of all (flagging, solveing, clearing) types."""
+        """ Sorts guesses of all (flagging, solveing, clearing) types
+        TODO: Remove in favor of calling clear/flag/solve directly
+        """
         tuple_guess = (tup[1],tup[2])
         if not self.game_over:            
-            """c -> clearing guess"""
             if tup[0] == 'c':
                 self.clear(tuple_guess)
             elif tup[0] == 'f':
-                """f -> flag guess"""
                 self.flag(tuple_guess)
             elif tup[0] == 's':
-                """s -> solve guess"""
                 self.solve(tuple_guess)
             if self.win_check():
                 self.game_over = 1
         return self.game_over
-
-    def solve(self, tuple_guess):
-        num = self.board[tuple_guess[0]][tuple_guess[1]]
-        expected_mines = self.get_around(tuple_guess).intersection(self.flagged)
-        if num in {'0', 'X', self.FLAGGED, self.DEFAULT}:
-            raise BadGuessError("Targeted square cannot be solved")
-        if int(num) != len(expected_mines):
-            raise BadGuessError("Targeted square cannot be solved")
-        if expected_mines.intersection(set(self.mines)) != expected_mines:
-            self.lose()
-            return self.game_over
-        to_clear = self.get_around(tuple_guess)
-        to_clear.remove(tuple_guess)
-        to_clear = to_clear.difference(self.mines)
-        for sq in to_clear:
-            if sq not in self.cleared:
-                self.clear(sq)
 
     def prettyprint(self):
         """For printing board to user"""
@@ -206,15 +191,32 @@ class MsGame:
         else:
             return
 
+    def solve(self, tuple_guess):
+        """Attempts to 'solve' passed guess as MS minesweeper two click. Fails if
+        square has not been cleared or holds 0, or if an incorrect number of 
+        squares have been flagged.
+        """
+        num = self.board[tuple_guess[0]][tuple_guess[1]]
+        expected_mines = self.get_around(tuple_guess).intersection(self.flagged)
+        if num in {'0', 'X', self.FLAGGED, self.DEFAULT}:
+            raise BadGuessError("Targeted square cannot be solved")
+        if int(num) != len(expected_mines):
+            raise BadGuessError("Targeted square cannot be solved")
+        if expected_mines.intersection(set(self.mines)) != expected_mines:
+            self.lose()
+            return self.game_over
+        to_clear = self.get_around(tuple_guess)
+        to_clear.remove(tuple_guess)
+        to_clear = to_clear.difference(self.mines)
+        for sq in to_clear:
+            if sq not in self.cleared:
+                self.clear(sq)
+
     def win_check(self):
-        """return true iff game has been won"""
-        dashes = 0
-        bangs = 0
-        for row in self.board:
-            for square in row:
-                if square == self.DEFAULT:
-                    dashes += 1
-                if square == self.FLAGGED:
-                    bangs += 1
+        """Return true iff game has been won
+        TODO: Refactor
+        """
+        dashes = len(self.squares) - ( len(self.flagged) + len(self.cleared) )
+        bangs = len(self.flagged)
         return bangs + dashes == self.num_mines
 

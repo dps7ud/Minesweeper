@@ -19,15 +19,16 @@ Cleanup:
 - [x] Stop using debug.py to test things and write a real goddamn test suite
 - [x] Refactor runner.py into a class rather than a script
 - [x] Refactor communication between 'ms' module and runner/debug 
-- [ ] Rewrite entire 'play' method
+- [x] Rewrite entire 'play' method
 - [ ] Rename pretty much everything
-- [ ] Allow MsGame to accept a specific random seed to get reproducible tests
 
 Features:
 ---------
 
 - [x] Refactor I/O to importing classes (minesweeper module)
+- [ ] Allow MsGame to accept a specific random seed to get reproducible tests
 - [ ] Finish games that are a tossup
+- [ ] Refactor gameover mechanics
 - [ ] Variable board size, number of mines and number of runs for runner
 - [ ] Implement pattern matching for common patterns (1-2-1, 1-1, 1-2)
 - [ ] Silent mode
