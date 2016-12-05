@@ -35,7 +35,7 @@ class MsGame:
 
     Methods:
         __init__(given_mines) -- Initialize MsGame class
-        get_around(square) -- returns all squares surrounding the given square
+        squares_around(square) -- returns all squares surrounding the given square
         get_board() -- returns current board state
         get_count( tuple(x, y) ) -- counts mines touching the square indicated by passed tuple
         clear( tuple(x, y) ) -- Recursive function that attempts to clear square indicated 
@@ -75,7 +75,7 @@ class MsGame:
         for ii, jj in _pair_range(10, 10):
             self.squares.add( (ii,jj) )
 
-    def get_around(self, square):
+    def squares_around(self, square):
         """ Returns a set of squares adjacent to the input square,
         including the input square.
         """
@@ -94,7 +94,7 @@ class MsGame:
         """accepts tuple inicating target square
         returns number of neighbours in self.mines (counts self)
         """
-        around = self.get_around(square)
+        around = self.squares_around(square)
         return len(around.intersection(self.mines))
 
     def clear(self, tuple_guess):
@@ -111,7 +111,7 @@ class MsGame:
         num = self.get_count(tuple_guess)
         self.board[tuple_guess[0]][tuple_guess[1]] = str(num)
         if num == 0:
-            to_clear = self.get_around(tuple_guess)
+            to_clear = self.squares_around(tuple_guess)
             to_clear.remove(tuple_guess)
             for element in to_clear:
                 if element not in self.cleared:
@@ -197,7 +197,7 @@ class MsGame:
         squares have been flagged.
         """
         num = self.board[tuple_guess[0]][tuple_guess[1]]
-        expected_mines = self.get_around(tuple_guess).intersection(self.flagged)
+        expected_mines = self.squares_around(tuple_guess).intersection(self.flagged)
         if num in {'0', 'X', self.FLAGGED, self.DEFAULT}:
             raise BadGuessError("Targeted square cannot be solved")
         if int(num) != len(expected_mines):
@@ -205,7 +205,7 @@ class MsGame:
         if expected_mines.intersection(set(self.mines)) != expected_mines:
             self.lose()
             return self.game_over
-        to_clear = self.get_around(tuple_guess)
+        to_clear = self.squares_around(tuple_guess)
         to_clear.remove(tuple_guess)
         to_clear = to_clear.difference(self.mines)
         for sq in to_clear:

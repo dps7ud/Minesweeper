@@ -21,6 +21,7 @@ Cleanup:
 - [x] Refactor communication between 'ms' module and runner/debug 
 - [x] Rewrite entire 'play' method
 - [ ] Rename pretty much everything
+- [ ] Stop keeping track of board data in two places (runner and ms)
 
 Features:
 ---------

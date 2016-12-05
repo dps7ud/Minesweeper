@@ -2,7 +2,7 @@
 A script to play a number of minesweeper games 
 """
 
-import ms
+import minesweeper as ms
 import random
 
 def _pair_range(len_outter, len_inner):
@@ -124,7 +124,7 @@ class Player:
                     continue
                 else:
                     number = int(character)
-                    around = self.game.get_around((ii,jj))
+                    around = self.game.squares_around((ii,jj))
                     around.remove( (ii,jj) )
                     hidden = []
                     flagCount = 0
@@ -149,7 +149,7 @@ class Player:
                 if character in ['*','0','-']:
                     continue
                 number = int(character)
-                around = self.game.get_around( (ii,jj))
+                around = self.game.squares_around( (ii,jj))
                 around.remove( (ii,jj) )
                 flagCount = 0
                 hiddenCount = 0

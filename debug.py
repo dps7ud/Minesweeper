@@ -8,7 +8,7 @@ Guess Format:
 """
 
 import re
-import ms
+import minesweeper as ms
 
 
 def _verify(guess_string):

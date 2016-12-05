@@ -1,6 +1,6 @@
-import runner
+import ms_Player as msp
 
-p = runner.Player()
+p = msp.Player()
 p.first_guess()
 p.later_guesses()
 p.cleanup()

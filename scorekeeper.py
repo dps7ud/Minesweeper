@@ -1,4 +1,4 @@
-import runner
+import ms_Player as msp
 
 class ScoreKeeper:
 
@@ -7,7 +7,7 @@ class ScoreKeeper:
 
     def play(self, number_games=100):
         for ii in range(number_games):
-            p = runner.Player()
+            p = msp.Player()
             p.first_guess()
             p.later_guesses()
             if p.game_over == 1:

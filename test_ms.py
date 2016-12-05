@@ -1,5 +1,5 @@
 """Contains unit tests for functionallity contained in ms.py"""
-import ms
+import minesweeper as ms
 import unittest
 
 class MineSweeperTest(unittest.TestCase):
@@ -11,16 +11,14 @@ class MineSweeperTest(unittest.TestCase):
     def test_flag_first_guess(self):
         init_board = [[ '-' ] * 10 for xx in range(10)]
         game = ms.MsGame()
-        val = game.first_guess( ('f',2,2) )
-        self.assertEqual(game.get_board(), init_board)
-        self.assertEqual(val, 0)
+        with self.assertRaises(ms.BadGuessError) as context:
+            val = game.first_guess( ('f',2,2) )
 
     def test_solve_first_guess(self):
         board = [[ '-' ] * 10 for xx in range(10)]
         game = ms.MsGame()
-        val = game.first_guess( ('s',2,2) )
-        self.assertEqual(game.get_board(), board)
-        self.assertEqual(val, 0)
+        with self.assertRaises(ms.BadGuessError) as context:
+            val = game.first_guess( ('s',2,2) )
 
     def test_incorrect_clear(self):
         game = ms.MsGame( given_mines=[(1,1)] )
