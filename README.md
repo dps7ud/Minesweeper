@@ -22,7 +22,7 @@ Cleanup:
 - [x] Rewrite entire 'play' method
 - [x] Rename pretty much everything
 - [x] Stop keeping track of board data in two places (runner and ms)
-- [ ] Rewrite ms_Player.later_guesses
+- [x] Rewrite ms_Player.later_guesses
 
 Features:
 ---------

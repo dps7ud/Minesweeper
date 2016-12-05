@@ -10,6 +10,9 @@ class ScoreKeeper:
             p = msp.Player()
             p.first_guess()
             p.later_guesses()
+            if p.game_over is None:
+                p.game.prettyprint()
+                print(ii)
             self.scores[p.game_over + 1] += 1
    
     def results(self):

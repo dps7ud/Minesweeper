@@ -116,6 +116,9 @@ class MsGame:
             for element in to_clear:
                 if element not in self.cleared:
                     self.clear(element)
+        if self.win_check():
+            self.game_over = 1
+        return self.game_over
                     
     def first_guess(self, guess):
         """Makes first guess and sets up mines after guess is made
@@ -146,6 +149,7 @@ class MsGame:
         elif tuple_guess not in self.flagged:
             self.flagged.add(tuple_guess)
             self.board[tuple_guess[0]][tuple_guess[1]] = self.FLAGGED
+        return self.game_over
 
     def lose(self):
         """Call to lose game"""
@@ -165,8 +169,6 @@ class MsGame:
                 self.flag(tuple_guess)
             elif tup[0] == 's':
                 self.solve(tuple_guess)
-            if self.win_check():
-                self.game_over = 1
         return self.game_over
 
     def prettyprint(self):
@@ -211,12 +213,9 @@ class MsGame:
         for sq in to_clear:
             if sq not in self.cleared:
                 self.clear(sq)
+        return self.game_over
 
     def win_check(self):
-        """Return true iff game has been won
-        TODO: Refactor
-        """
-        dashes = len(self.squares) - ( len(self.flagged) + len(self.cleared) )
-        bangs = len(self.flagged)
-        return bangs + dashes == self.num_mines
-
+        """Return true iff game has been won"""
+        squares_left = len(self.squares) - len(self.cleared)
+        return squares_left == self.num_mines
