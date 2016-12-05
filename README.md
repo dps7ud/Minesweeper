@@ -20,8 +20,9 @@ Cleanup:
 - [x] Refactor runner.py into a class rather than a script
 - [x] Refactor communication between 'ms' module and runner/debug 
 - [x] Rewrite entire 'play' method
-- [ ] Rename pretty much everything
-- [ ] Stop keeping track of board data in two places (runner and ms)
+- [x] Rename pretty much everything
+- [x] Stop keeping track of board data in two places (runner and ms)
+- [ ] Rewrite ms_Player.later_guesses
 
 Features:
 ---------

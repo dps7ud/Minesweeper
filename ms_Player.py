@@ -28,53 +28,49 @@ class Player:
         changed: True whenever progress has been made. Used to detect if game
             requires patters or guessing.
         game_over: indicates if game is over or not
-        cleared: set of squares that have been cleared
-        flagged: set of squares that have been flagged
-
     """
     def __init__(self, given_mines=None, verbose=False):
         """Initializer, takes optional mine arguments"""
         self.changed = True
         self.game_over = 0
-        self.cleared = set()
-        self.flagged = set()
         self.verbose = verbose
         if given_mines is not None:
             self.game = ms.MsGame(given_mines)
         else:
             self.game = ms.MsGame()
-        self.board = self.game.get_board()
 
     def clear(self, square):
         """Submits clearing guess to game object"""
-        if square in self.cleared:
+        if square in self.game.cleared:
             raise ms.BadGuessError("newrunner: 22")
         val = self.game.play(('c',square[0],square[1]))
-        self.board = self.game.get_board()
-        self.cleared.add(square)
+        self.game.cleared.add(square)
         return val
     
     def flag(self, square):
         """Flag (if not flagged) or unflag (if flagged) given square"""
-        self.flagged ^= {square}
         val = self.game.play(('f',square[0],square[1]))
-        self.board = self.game.get_board()
         return val
     
     
-    def retreive(self, square, board):
+    def retreive(self, square):
         """find character at tuple"""
-        return self.board[square[0]][square[1]]
+        return self.game.board[ square[0] ][ square[1] ]
     
     
     def solve(self, square):
-        """Submits solving guess to game object.
-        """
+        """Submits solving guess to game object"""
         val = self.game.play(('s', square[0], square[1]))
-        self.board = self.game.get_board()
         return val
 
     def cleanup(self):
+        """Unimplemented"""
+        if self.verbose:
+            self.game.prettyprint()
+            if self.game_over == -1:
+                print("Lost")
+            elif self.game_over == 1:
+                print("Won")
         pass
 
     def run_game(self):
@@ -90,20 +86,18 @@ class Player:
         we lose
         """
         self.game_over = self.game.first_guess( ('c',5,5) )
-        self.board = self.game.get_board()
         shown = set()
-        for row in self.board:
+        for row in self.game.board:
             shown = shown.union(set(row))
         x = random.randint(0,9)
         y = random.randint(0,9)
         while '0' not in shown and not self.game_over:
-            while ( (x,y) in self.game.flagged.union( self.cleared ) 
-                or (self.board[x][y] != '-') ):
+            while ( (x,y) in self.game.flagged.union( self.game.cleared ) 
+                or (self.game.board[x][y] != '-') ):
                 x = random.randint(0,9)
                 y = random.randint(0,9)
             self.game_over = self.clear((x,y))
-            self.board = self.game.get_board()
-            for row in self.board:
+            for row in self.game.board:
                 shown = shown.union(set(row))
 
     def later_guesses(self):
@@ -119,7 +113,7 @@ class Player:
             for (ii,jj) in _pair_range(10, 10):
             #for ii in range(10):
             #    for jj in range(10):
-                character = self.retreive((ii,jj), self.board)
+                character = self.retreive((ii,jj))
                 if character in ['X','*','-','0']:
                     continue
                 else:
@@ -129,7 +123,7 @@ class Player:
                     hidden = []
                     flagCount = 0
                     for a in around:
-                        sym = self.retreive(a,self.board)
+                        sym = self.retreive(a)
                         if sym == '-':
                             hidden.append(a)
                         elif sym == '*':
@@ -139,13 +133,12 @@ class Player:
                     if len(hidden) + flagCount == number and len(hidden) > 0:
                         for h in hidden:
                             self.game_over = self.flag(h)
-                            self.board = self.game.get_board()
                         self.changed = True
             """Finds all nonzero cleared squares and inspects surrounding squares"""
             for (ii,jj) in _pair_range(10, 10):
             #for ii in range(10):
             #    for jj in range(10):
-                character = self.retreive((ii,jj), self.board)
+                character = self.retreive((ii,jj))
                 if character in ['*','0','-']:
                     continue
                 number = int(character)
@@ -154,7 +147,7 @@ class Player:
                 flagCount = 0
                 hiddenCount = 0
                 for a in around:
-                    sym = self.retreive(a,self.board)
+                    sym = self.retreive(a)
                     if sym == '*':
                         flagCount += 1
                     if sym == '-':
@@ -165,12 +158,4 @@ class Player:
                     if self.game_over:
                         break
                     self.game_over = self.solve((ii,jj))
-                    self.board = self.game.get_board()
                     self.changed = True
-        if self.verbose:
-            self.game.prettyprint()
-            if self.game_over == -1:
-                print("Lost")
-            elif self.game_over == 1:
-                print("Won")
-
