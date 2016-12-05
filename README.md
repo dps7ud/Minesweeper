@@ -28,7 +28,7 @@ Features:
 ---------
 
 - [x] Refactor I/O to importing classes (minesweeper module)
-- [ ] Allow MsGame to accept a specific random seed to get reproducible tests
+- [x] Allow MsGame to accept a specific random seed to get reproducible tests
 - [ ] Finish games that are a tossup
 - [ ] Refactor gameover mechanics
 - [ ] Variable board size, number of mines and number of runs for runner

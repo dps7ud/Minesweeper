@@ -121,7 +121,7 @@ class MsGame:
         if self.win_check():
             self.game_over = 1
         return self.game_over
-                    
+
     def first_guess(self, guess):
         """Makes first guess and sets up mines after guess is made
         TODO: merge with clear()

@@ -45,17 +45,23 @@ class Player:
         if self.verbose:
             self.game.prettyprint()
             print("hung")
+        if len(self.game.flagged) == self.game.num_mines:
+            to_clear = self.game.squares.difference( self.game.flagged.union(self.game.cleared) )
+            print(to_clear)
+            for square in to_clear:
+                self.game_over = self.clear(square)
+                self.changed = True
 
     def clear(self, square):
         """Submits clearing guess to game object"""
         val = self.game.clear(square)
         return val
-    
+ 
     def flag(self, square):
         """Flag (if not flagged) or unflag (if flagged) given square"""
         val = self.game.flag(square)
         return val
-    
+ 
     def flag_all(self):
         """Finds all nonzero cleared squares and inspects surrounding squares"""
         for square in self.game.cleared:
@@ -151,7 +157,8 @@ class Player:
         while not self.game_over:
             if not self.changed:
                 self.ambigious()
-                break #Leave until ambigious does something
+                if not self.changed:
+                    break #TODO: Sloppy. Find a better way.
             self.changed = False
             self.flag_all()
             self.solve_all()
