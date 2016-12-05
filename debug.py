@@ -37,7 +37,6 @@ while not game_over:
             game_over = game.play(guess_to_pass) 
         except ms.BadGuessError as err:
             print("Pick another square")
-    game_over = game.win_check()
     game.prettyprint()
 if game_over == -1:
     print("Lost")

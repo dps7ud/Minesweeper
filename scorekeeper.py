@@ -7,10 +7,10 @@ class ScoreKeeper:
 
     def play(self, number_games=100):
         for ii in range(number_games):
-            p = msp.Player()
+            p = msp.Player(seed=ii)
             p.first_guess()
             p.later_guesses()
-            if p.game_over is None:
+            if p.game_over == 0:
                 p.game.prettyprint()
                 print(ii)
             self.scores[p.game_over + 1] += 1

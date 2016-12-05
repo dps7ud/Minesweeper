@@ -3,6 +3,7 @@ Class: MsGame - object holding all game related information
 Class: BadGuessError - error that is called for any guess made at an improper time
 """
 
+
 import itertools
 import random
 import re
@@ -13,6 +14,7 @@ def _pair_range(len_outter, len_inner):
     for ii in range(len_outter):
         for jj in range(len_inner):
             yield ii, jj
+
 
 class BadGuessError(Exception):
     pass
@@ -56,7 +58,7 @@ class MsGame:
     FLAGGED = '*'
     DEFAULT = '-'
 
-    def __init__(self, given_mines=None):
+    def __init__(self, given_mines=None, seed=None):
         """Populates self.squares and possibly other options. Initializes all instance
             variables.
         """
@@ -104,7 +106,7 @@ class MsGame:
         if tuple_guess in self.flagged.union(self.cleared):
             raise BadGuessError("Targeted square is flagged or already cleared")
         if tuple_guess in self.mines:
-            self.lose()
+            self.lose(tuple_guess)
             return self.game_over
         self.cleared.add(tuple_guess)
         #Not a mine so clear it
@@ -132,7 +134,7 @@ class MsGame:
         self.setup_mines(tuple_guess)
         #Following check required for games with constructed mines
         if tuple_guess in self.mines:
-            self.lose()
+            self.lose(tuple_guess)
             return self.game_over
         self.clear(tuple_guess)
         if self.win_check():
@@ -151,10 +153,11 @@ class MsGame:
             self.board[tuple_guess[0]][tuple_guess[1]] = self.FLAGGED
         return self.game_over
 
-    def lose(self):
+    def lose(self, tuple_guess):
         """Call to lose game"""
         for mine in self.mines:
-            self.board[mine[0]][mine[1]] = 'X'
+            self.board[mine[0]][mine[1]] = 'x'
+        self.board[tuple_guess[0]][tuple_guess[1]] = 'X'
         self.game_over = -1
 
     def play(self, tup):
@@ -204,12 +207,9 @@ class MsGame:
             raise BadGuessError("Targeted square cannot be solved")
         if int(num) != len(expected_mines):
             raise BadGuessError("Targeted square cannot be solved")
-        if expected_mines.intersection(set(self.mines)) != expected_mines:
-            self.lose()
-            return self.game_over
         to_clear = self.squares_around(tuple_guess)
         to_clear.remove(tuple_guess)
-        to_clear = to_clear.difference(self.mines)
+        to_clear = to_clear.difference(self.flagged)
         for sq in to_clear:
             if sq not in self.cleared:
                 self.clear(sq)

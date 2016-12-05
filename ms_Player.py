@@ -13,27 +13,28 @@ def _pair_range(len_outter, len_inner):
 
 class Player:
     """Methods:
-        clear(square) attempts to clear given square
-        flag(square) attempts to flag given square
-        retreive(square) gets the character at the given square
-        solve(square) attempts to solve given square
-        cleanup() runs various cleanup processes. May later include 
-            scorekeeping or other stats
-        run_game() call to play one game to completion
-        first_guess() guesses ('c',5,5) and random clearing guesses 
-            until an 'opening' is found
-        later_guesses() keeps guessing until end of game.
+       clear(square) attempts to clear given square
+       flag(square) attempts to flag given square
+       retreive(square) gets the character at the given square
+       solve(square) attempts to solve given square
+       cleanup() runs various cleanup processes. May later include 
+           scorekeeping or other stats
+       run_game() call to play one game to completion
+       first_guess() guesses ('c',5,5) and random clearing guesses 
+           until an 'opening' is found
+       later_guesses() keeps guessing until end of game.
 
        Fields:
-        changed: True whenever progress has been made. Used to detect if game
+       changed: True whenever progress has been made. Used to detect if game
             requires patters or guessing.
-        game_over: indicates if game is over or not
+       game_over: indicates if game is over or not
     """
-    def __init__(self, given_mines=None, verbose=False):
+    def __init__(self, given_mines=None, seed=None, verbose=False):
         """Initializer, takes optional mine arguments"""
         self.changed = True
         self.game_over = 0
         self.verbose = verbose
+        random.seed(seed)
         if given_mines is not None:
             self.game = ms.MsGame(given_mines)
         else:
