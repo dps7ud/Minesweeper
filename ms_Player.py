@@ -47,7 +47,6 @@ class Player:
             print("hung")
         if len(self.game.flagged) == self.game.num_mines:
             to_clear = self.game.squares.difference( self.game.flagged.union(self.game.cleared) )
-            print(to_clear)
             for square in to_clear:
                 self.game_over = self.clear(square)
                 self.changed = True
