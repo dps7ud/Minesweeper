@@ -72,8 +72,8 @@ class MsGame:
         self.squares = set()
 
         if given_mines is not None:
-            self.num_mines = len(self.mines)
             self.mines = list(given_mines)
+            self.num_mines = len(self.mines)
         for ii, jj in _pair_range(10, 10):
             self.squares.add( (ii,jj) )
 
