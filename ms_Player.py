@@ -13,21 +13,24 @@ def _pair_range(len_outter, len_inner):
 
 class Player:
     """Methods:
-       clear(square) attempts to clear given square
-       flag(square) attempts to flag given square
-       retreive(square) gets the character at the given square
-       solve(square) attempts to solve given square
-       cleanup() runs various cleanup processes. May later include 
+       clear(square) -- attempts to clear given square
+       flag(square) -- attempts to flag given square
+       flag_all(square) -- Flag everything possible
+       retreive(square) -- gets the character at the given square
+       solve(square) -- attempts to solve given square
+       solve_all(square) -- solve everything possible
+       cleanup() -- runs various cleanup processes. May later include 
            scorekeeping or other stats
-       run_game() call to play one game to completion
-       first_guess() guesses ('c',5,5) and random clearing guesses 
+       run_game() -- call to play one game to completion
+       first_guess() -- guesses ('c',5,5) and random clearing guesses 
            until an 'opening' is found
-       later_guesses() keeps guessing until end of game.
+       later_guesses() -- keeps guessing until end of game.
 
        Fields:
        changed: True whenever progress has been made. Used to detect if game
             requires patters or guessing.
        game_over: indicates if game is over or not
+       verbose: indicates if data to stdout is wanted
     """
     def __init__(self, given_mines=None, seed=None, verbose=False):
         """Initializer, takes optional mine arguments"""
@@ -41,6 +44,10 @@ class Player:
             self.game = ms.MsGame()
 
     def ambigious(self):
+        """For games where progress cannot otherwise be made,
+        a series of other checks will be made:
+        if all mines are flagged, clear everything else
+        """
         #Game hung, implement strats later
         if self.verbose:
             self.game.prettyprint()
@@ -94,7 +101,7 @@ class Player:
         return val
 
     def cleanup(self):
-        """Unimplemented"""
+        """If verbose, print info"""
         if self.verbose:
             self.game.prettyprint()
             if self.game_over == -1:
@@ -131,6 +138,9 @@ class Player:
                 shown = shown.union(set(row))
 
     def solve_all(self):
+        """For (non-zero) cleared squares, if all nearby 
+        mines are flagged, solve the input square"""
+        #Look at COPY of cleared since the origional is mutated
         cleared_freeze = self.game.cleared.copy()
         for square in cleared_freeze:
             character = self.retreive(square)
@@ -138,21 +148,17 @@ class Player:
                 number = int(character)
                 around = self.game.squares_around(square)
                 around.remove(square)
-                flagCount = 0
-                hiddenCount = 0
-                for a in around:
-                    sym = self.retreive(a)
-                    if sym == '*':
-                        flagCount += 1
-                    if sym == '-':
-                        hiddenCount += 1
+                flag_count = len(around.intersection(self.game.flagged))
+                hidden_count = len(around) - flag_count
+                hidden_count -= len(around.intersection(self.game.cleared))
                 """If all surrounding mines are flagged, and there are unchecked squares,
                 check everything"""
-                if flagCount == number and hiddenCount != 0:
+                if flag_count == number and hidden_count != 0:
                     self.game_over = self.solve(square)
                     self.changed = True
 
     def later_guesses(self):
+        """Main loop"""
         while not self.game_over:
             if not self.changed:
                 self.ambigious()
