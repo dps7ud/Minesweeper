@@ -16,6 +16,7 @@ class ScoreKeeper:
             p.first_guess()
             p.later_guesses()
             self.scores[p.game_over + 1] += 1
+
     def results(self):
         print(self.scores)
 

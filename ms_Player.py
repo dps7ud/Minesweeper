@@ -57,6 +57,12 @@ class Player:
             for square in to_clear:
                 self.game_over = self.clear(square)
                 self.changed = True
+        else:
+            #For now, make a random choice
+            not_cleared = self.game.squares.difference(self.game.cleared.union(self.game.flagged))
+            rand_guess = random.sample(not_cleared, 1)[0]
+            self.game_over = self.clear(rand_guess)
+            self.changed = True
 
     def clear(self, square):
         """Submits clearing guess to game object"""
@@ -163,7 +169,9 @@ class Player:
             if not self.changed:
                 self.ambigious()
                 if not self.changed:
-                    break #TODO: Sloppy. Find a better way.
+                    break 
+                continue
+                #TODO: Sloppy. Find a better way.
             self.changed = False
             self.flag_all()
             self.solve_all()

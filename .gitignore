@@ -3,8 +3,11 @@
 *.pyo
 
 # pycache
-__pycache__
+__pycache__/
 
 # Vim swaps
 *.sw
 *.swp
+
+# Diagnostics file for examining tied games
+diagnostic.py
