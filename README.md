@@ -29,12 +29,12 @@ Features:
 
 - [x] Refactor I/O to importing classes (minesweeper module)
 - [x] Allow MsGame to accept a specific random seed to get reproducible tests
-- [ ] Finish games that are a tossup
+- [x] Finish games that are a tossup
 - [ ] Refactor gameover mechanics
 - [ ] Variable board size, number of mines and number of runs for runner
 - [ ] Implement pattern matching for common patterns (1-2-1, 1-1, 1-2)
 - [ ] Silent mode
-- [ ] Keep stats
+- [x] Keep stats
 - [ ] Optomize clearing strategy
 - [ ] Optomize guessing strategy
 - [ ] Add more dimensions
